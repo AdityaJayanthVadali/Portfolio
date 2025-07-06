@@ -254,7 +254,7 @@ with tabs[1]:  # 📁 Projects
                 label="Select Project",
                 options=[
                     "Candy Store ETL",
-                    "Healthcare Normalization Pipeline",
+                    "Healthcare Normalization Pipeline - PySpark",
                     "Credit Card Transaction System - Lambda Architecture",
                     "Fake Job Posting Detection - NLP Pipeline"
                 ],
@@ -267,6 +267,28 @@ with tabs[1]:  # 📁 Projects
     with right:
         if project == "Candy Store ETL":
             st.header("Candy Store ETL")
+
+            st.markdown(
+                    """
+                    <a href="https://github.com/AdityaJayanthVadali/Candy-Store-ETL/tree/main" target="_blank" style="
+                        text-decoration: none;
+                    ">
+                        <span style="
+                            background-color: #FFD700;
+                            color: red;
+                            font-weight: 600;
+                            padding: 0.3em 0.8em;
+                            border-radius: 999px;
+                            font-size: 0.9em;
+                            border: 1px solid #333;
+                        ">
+                            GitHub
+                        </span>
+                    </a>
+                    """,
+                    unsafe_allow_html=True
+                )
+                
             st.markdown("""
 
 
@@ -307,16 +329,131 @@ Robust error handling is a key feature of the system. It is designed to graceful
 The project demonstrates adherence to several software development best practices, including the use of strong typing with type hints for code clarity, comprehensive error handling mechanisms, clear separation of concerns for modularity, and detailed logging and reporting for better monitoring and debugging.
             """)
 
-        elif project == "Healthcare Normalization Pipeline":
-            st.header("Healthcare Normalization Pipeline")
-            st.markdown("""
-            - ⚙️ PySpark batch pipeline for flat EHR records  
-            - 🏗️ Airflow-orchestrated stages into Snowflake schema  
-            - ✅ 10 dimension tables + 1 fact table
-            """)
+        elif project == "Healthcare Normalization Pipeline - PySpark":
+            st.header("Healthcare Normalization Pipeline - PySpark")
 
+            st.markdown(
+                    """
+                    <a href="https://github.com/AdityaJayanthVadali/Healthcare-Normalization-PySpark/tree/main" target="_blank" style="
+                        text-decoration: none;
+                    ">
+                        <span style="
+                            background-color: #FFD700;
+                            color: red;
+                            font-weight: 600;
+                            padding: 0.3em 0.8em;
+                            border-radius: 999px;
+                            font-size: 0.9em;
+                            border: 1px solid #333;
+                        ">
+                            GitHub
+                        </span>
+                    </a>
+                    """,
+                    unsafe_allow_html=True
+                )
+
+            st.markdown("""
+            ## Healthcare Data Normalization System
+
+            ### Project Overview
+            This project focuses on developing a data processing system for healthcare datasets. Its primary goal is to normalize legacy, flat-structured healthcare data into a dimensional data model, which includes **10 dimension tables** and **1 fact table**. The system leverages Apache Spark for scalable data processing to manage patient records, visit information, diagnoses, treatments, and billing details.
+
+            ### Dataset Information
+            The system is designed to process healthcare patient data from either MySQL or CSV sources. The dataset encompasses comprehensive healthcare records, including:
+            - Patient demographics
+            - Contact information
+            - Visit specifics
+            - Insurance and billing details
+            - Primary and secondary diagnoses
+            - Treatments
+            - Prescriptions
+            - Lab orders
+
+            ### Data Model
+            The normalized data model is structured as a **snowflake schema**, optimizing it for efficient querying and data management. It comprises ten dimension tables:
+
+            - `dim_patient` - patient demographics
+            - `dim_insurance` - insurance plan details
+            - `dim_billing` - billing and payment information
+            - `dim_provider` - healthcare provider details
+            - `dim_location` - clinic and room information
+            - `dim_primary_diagnosis` - primary diagnosis codes
+            - `dim_secondary_diagnosis` - secondary diagnosis codes
+            - `dim_treatment` - treatment details
+            - `dim_prescription` - prescription details
+            - `dim_lab_order` - lab test information
+
+            A central `fact_visit` table contains visit records and links to all these dimension tables.
+
+            ### Key Functionalities and Processes
+            The system's core functions include:
+            1. **Loading healthcare data** from CSV or MySQL into Spark DataFrames
+            2. **Normalizing data** into the predefined dimensional model
+            3. **Saving all tables** as individual CSV files after normalization
+            4. **Performing data integrity checks**:
+            - Verifying uniqueness of primary keys
+            - Ensuring referential integrity between fact and dimension tables
+            - Reporting any detected data quality issues
+
+            The `data_processor.py` file contains the logic for creating and populating these tables, while `main.py` orchestrates the overall process.
+
+            ### Technical Requirements
+            To run this application, the following are required:
+
+            **Python packages:**
+            - `pyspark==3.4.0`
+            - `python-dotenv==1.0.0`
+            - `mysql-connector-python==9.2.0`
+
+            **Additional requirements:**
+            - Java Development Kit (JDK 8 or higher)
+            - MySQL Connector JAR file for Spark-MySQL interaction
+
+            The `load_sql.py` script provides functionality for loading CSV data directly into a MySQL table using Pandas and SQLAlchemy.
+
+            ### Tableau Dashboard Analysis
+
+            The Tableau dashboard provides a comprehensive visualization of the healthcare data after it has been transformed into a dimensional model. This dashboard was designed with the perspective of a **financial/insurance audit team** in mind, aiming to provide at-a-glance business intelligence related to demographics and insurance for informed decision-making.
+            
+            ### Dashboard Components
+
+            - **Location/Visit Analysis**: This component features a horizontal bar chart that illustrates the distribution of visits across different clinic locations. It segments each bar by visit type (e.g., Emergency, Routine, Follow-up), allowing for a quick comparison of the most commonly utilized services at each facility.
+            """)
+            st.image("projects/healthcare-pyspark/LocationVisit.png")   
+            st.image("projects/healthcare-pyspark/visittype_legend.png")
+
+            st.markdown("""- **Gender/Age Group Distribution**: This visualization is a stacked bar chart that breaks down patients by gender and age group. It clearly delineates between adult and senior populations, helping to identify demographic patterns in healthcare utilization.""")
+            st.image("projects/healthcare-pyspark/genderagegroup.png", width = 800)
+            st.image("projects/healthcare-pyspark/age_legend.png")
+            st.markdown(""" - **Insurance Coverage**: A treemap visualization is used to present the distribution of insurance coverage types among the patient population. The size of each rectangle on the treemap indicates the relative number of patients covered by each insurance type, making it easy to identify the most prevalent insurance plans.""")
+            st.image("projects/healthcare-pyspark/insurancecoverage.png", width = 800)
+            st.markdown("""- **Yearly Visits by Age Group**: This small table displays temporal trends in visits across different years, categorized by age group. This time-series view is useful for identifying changing patterns in healthcare utilization across various demographic segments over time.""")
+            st.image("projects/healthcare-pyspark/visitagegroup.png", width = 800)
+            st.markdown("""- **Insurance Payer Analysis**: This bar chart shows the count of patients associated with each insurance provider. It helps to identify the major insurance partners and their relative importance to the healthcare system.""")
+            st.image("projects/healthcare-pyspark/insirancepayer.png", width = 800)
         elif project == "Credit Card Transaction System - Lambda Architecture":
             st.header("Credit Card Transaction System – Lambda Architecture")
+            st.markdown(
+                    """
+                    <a href="https://github.com/AdityaJayanthVadali/Credit-Card-Lambda" target="_blank" style="
+                        text-decoration: none;
+                    ">
+                        <span style="
+                            background-color: #FFD700;
+                            color: red;
+                            font-weight: 600;
+                            padding: 0.3em 0.8em;
+                            border-radius: 999px;
+                            font-size: 0.9em;
+                            border: 1px solid #333;
+                        ">
+                            GitHub
+                        </span>
+                    </a>
+                    """,
+                    unsafe_allow_html=True
+                )
             st.markdown("""
             - 💳 Kafka stream for real-time validation  
             - 🗂️ Batch reconciliation layer in Spark  
