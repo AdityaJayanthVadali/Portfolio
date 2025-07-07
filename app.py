@@ -2,6 +2,8 @@ import base64
 import streamlit as st
 from pathlib import Path
 
+
+
 st.markdown(
     """
     <style>
@@ -208,6 +210,32 @@ st.markdown(
         background-color: rgba(255, 215, 0, 0.15) !important;
         color: #FFCC00 !important;
     }
+
+    /* ------ BACKTICK/CODE STYLING ------ */
+    /* Style inline code blocks (backticks) */
+    code {
+        background-color: var(--red-accent) !important;
+        color: var(--gold-text) !important;
+        padding: 2px 6px !important;
+        border-radius: 3px !important;
+        font-family: monospace !important;
+        font-size: 0.9em !important;
+    }
+    
+    /* Style code blocks in markdown */
+    .stMarkdown code {
+        background-color: var(--red-accent) !important;
+        color: var(--gold-text) !important;
+    }
+    
+    /* Pre-formatted code blocks */
+    pre code {
+        background-color: var(--black-bg) !important;
+        color: var(--gold-text) !important;
+        border: 1px solid var(--red-accent) !important;
+    } 
+
+    
     </style>
     """,
     unsafe_allow_html=True,
@@ -256,7 +284,8 @@ with tabs[1]:  # 📁 Projects
                     "Candy Store ETL",
                     "Healthcare Normalization Pipeline - PySpark",
                     "Credit Card Transaction System - Lambda Architecture",
-                    "Fake Job Posting Detection - NLP Pipeline"
+                    "Fake Job Posting Detection - NLP Pipeline",
+                    "Stock Market Data Medallion Architecture"
                 ],
                 label_visibility="collapsed"  # hide small caption
             )
@@ -354,7 +383,6 @@ The project demonstrates adherence to several software development best practice
                 )
 
             st.markdown("""
-            ## Healthcare Data Normalization System
 
             ### Project Overview
             This project focuses on developing a data processing system for healthcare datasets. Its primary goal is to normalize legacy, flat-structured healthcare data into a dimensional data model, which includes **10 dimension tables** and **1 fact table**. The system leverages Apache Spark for scalable data processing to manage patient records, visit information, diagnoses, treatments, and billing details.
@@ -432,6 +460,7 @@ The project demonstrates adherence to several software development best practice
             st.image("projects/healthcare-pyspark/visitagegroup.png", width = 800)
             st.markdown("""- **Insurance Payer Analysis**: This bar chart shows the count of patients associated with each insurance provider. It helps to identify the major insurance partners and their relative importance to the healthcare system.""")
             st.image("projects/healthcare-pyspark/insirancepayer.png", width = 800)
+
         elif project == "Credit Card Transaction System - Lambda Architecture":
             st.header("Credit Card Transaction System – Lambda Architecture")
             st.markdown(
@@ -455,18 +484,110 @@ The project demonstrates adherence to several software development best practice
                     unsafe_allow_html=True
                 )
             st.markdown("""
-            - 💳 Kafka stream for real-time validation  
-            - 🗂️ Batch reconciliation layer in Spark  
-            - 📊 MySQL for stateful customer & card data
+            ### Project Overview
+            This project implements a comprehensive credit card transaction processing system using Lambda Architecture, combining real-time stream processing with batch processing capabilities. The system processes transactions from April 1-4, 2025, managing credit card validations, balance updates, and credit score calculations through a sophisticated pipeline that mimics real-world financial processing systems.
+
+            ### Architecture & Components
+            The system follows Lambda Architecture with three distinct layers: **Stream Layer** for real-time transaction validation using Apache Kafka, **Batch Layer** for end-of-day processing and reconciliation, and **Serving Layer** for data persistence in MySQL. Key components include a Kafka producer that simulates transaction generation, a consumer that validates transactions in real-time, and a batch processor that performs comprehensive daily updates.
+
+            ### Stream Processing Pipeline
+            The stream layer utilizes Kafka for real-time transaction processing. The producer (`producer.py`) reads transactions from CSV files and sends them chronologically to Kafka, simulating realistic timing with configurable speed factors. The consumer (`consumer.py`) validates each transaction against three rules: transaction amount must be < 50% of credit limit, merchant location must be within acceptable distance from customer address, and accumulated pending balance cannot exceed credit limit. Approved transactions are marked as "pending" while declined ones are logged with specific rejection reasons.
+
+            ### Batch Processing Operations
+            At the end of each day, the batch processor (`batch_processor.py`) performs comprehensive updates: approving all pending transactions, updating card balances, recalculating credit scores based on utilization percentages, and adjusting credit limits for customers with declining scores. The credit score adjustment follows a tiered system ranging from +15 points for excellent utilization (≤10%) to -25 points for very high utilization (>70%). Credit limits are reduced proportionally when scores drop, with reductions of 5-15% based on the severity of the score decrease.
+
+            ### Data Management & Verification
+            The system maintains data integrity through multiple mechanisms. The database handler (`database.py`) manages MySQL operations, creating and maintaining tables for customers, cards, credit card types, and transactions. All processed data is saved both as CSV files (day-specific and consolidated) and in MySQL tables. A comprehensive verification module (`verify_days.py`) ensures all daily transactions are properly processed and stored, checking for missing files and date consistency across all outputs.
+
+            ### Technical Implementation
+            The orchestration is managed by `main.py`, which coordinates the entire pipeline: initializing the database, managing producer and consumer processes for each day, triggering batch processing, and running verification. The system uses flag files for inter-process communication and includes robust error handling with detailed logging. Helper functions in `helper.py` provide business logic for location validation, credit score calculations, and credit limit adjustments. The modular design allows for easy maintenance and debugging of individual components.
             """)
 
-        else:  # Fake Job Posting Detection – NLP Pipeline
+        elif (project == "Fake Job Posting Detection - NLP Pipeline"):  # Fake Job Posting Detection – NLP Pipeline
             st.header("Fake Job Posting Detection – NLP Pipeline")
+            st.markdown(
+                    """
+                    <a href="https://github.com/AdityaJayanthVadali/Fake-Job-Posting-Detection" target="_blank" style="
+                        text-decoration: none;
+                    ">
+                        <span style="
+                            background-color: #FFD700;
+                            color: red;
+                            font-weight: 600;
+                            padding: 0.3em 0.8em;
+                            border-radius: 999px;
+                            font-size: 0.9em;
+                            border: 1px solid #333;
+                        ">
+                            GitHub
+                        </span>
+                    </a>
+                    """,
+                    unsafe_allow_html=True
+                )
+
             st.markdown("""
-            - 📝 Collected 17 k job ads; cleaned & vectorized text  
-            - 🤖 BERT fine-tuned for fake/real classification (94 % F1)  
-            - 📦 Packaged as REST-style micro-service
+            ### Project Overview
+            This project develops a machine learning model to classify job postings as either legitimate or fraudulent, addressing the growing concern of fake job advertisements. The system processes textual features from job descriptions and requirements to predict fake listings, utilizing a structured machine learning pipeline for binary text classification with a focus on achieving high F1 scores for the fraudulent class.
+
+            ### Dataset & Features
+            The project uses a job posting dataset (`job_train.csv`) containing 8,490 entries with 8 features including title, location, description, requirements, telecommuting status, company logo presence, questions availability, and the target variable (fraudulent). The `description` and `requirements` text fields were specifically selected as primary features due to their contextual relevance in identifying fraudulent postings, with missing values replaced by empty strings during preprocessing.
+
+            ### Technical Implementation
+            The solution implements a complete NLP pipeline using TF-IDF vectorization for text feature extraction. The TfidfVectorizer concatenates description and requirements into a single text string, configured with English stop words removal, L2 normalization, and n-gram range of (1,5) to capture contextual patterns. An SGDClassifier (Stochastic Gradient Descent) was chosen for its efficient runtime and competitive F1 scores, with class balancing to handle potential data imbalance.
+
+            ### Model Optimization
+            Hyperparameter tuning was performed using RandomizedSearchCV with 200 iterations, optimizing for F1 score. The parameter space included L2 regularization with alpha values ranging from 10^-6 to 10^2 and max iterations from 500 to 5000. The system utilized all available CPU cores for parallel computation, achieving an optimal balance between performance and runtime efficiency.
+
+            ### Performance Results
+            The model achieved a strong F1 score of 0.794258 for the fraudulent class (label 1), demonstrating effective identification of fake postings while maintaining balance between precision and recall. The entire training and evaluation process completed efficiently in approximately 2.26 minutes, well within the 30-minute runtime constraint. This performance metric is particularly suitable for the imbalanced dataset nature of fraud detection.
+
+            ### Code Architecture
+            The project follows a modular design with three main components: `project.py` contains the my_model class encapsulating the entire ML pipeline including preprocessing and classification; `my_evaluation.py` provides comprehensive evaluation metrics beyond basic accuracy; and `test.py` serves as the main execution script handling data loading, model training, and performance evaluation. The system is designed to work with restricted package dependencies (scikit-learn, nltk, gensim, pandas, numpy) as per course requirements.
             """)
+
+        elif(project == "Stock Market Data Medallion Architecture"):
+            st.header("Stock Market Data Medallion Architecture")
+            st.markdown(
+                    """
+                    <a href="https://github.com/AdityaJayanthVadali/Stock-Market-Data-Medallion-Architecture/tree/main" target="_blank" style="
+                        text-decoration: none;
+                    ">
+                        <span style="
+                            background-color: #FFD700;
+                            color: red;
+                            font-weight: 600;
+                            padding: 0.3em 0.8em;
+                            border-radius: 999px;
+                            font-size: 0.9em;
+                            border: 1px solid #333;
+                        ">
+                            GitHub
+                        </span>
+                    </a>
+                    """,
+                    unsafe_allow_html=True
+                )
+            st.markdown("""
+            ### Project Overview
+            This project implements a Medallion Architecture for processing stock market data using PySpark. The system demonstrates a complete data engineering pipeline that ingests raw stock data from multiple sources (MySQL and MongoDB), transforms it through Bronze, Silver, and Gold layers, and produces business-ready analytics at various time granularities. The architecture showcases best practices in data lake design, processing stock transactions generated every second into structured analytical datasets.
+
+            ### Data Sources & Architecture
+            The system integrates data from two primary sources: MySQL database containing company information and market index data, and MongoDB storing transaction records in JSON format. Following the Medallion Architecture pattern, the Bronze Layer captures raw data including user transactions, market information, and stock registration details. The Silver Layer contains cleaned, enriched, and structured hourly stock data, while the Gold Layer provides aggregated summaries optimized for reporting and business intelligence applications.
+
+            ### Technical Implementation
+            The project utilizes PySpark for distributed data processing, with the `DataProcessor` class handling all transformations. The `ingest_data` method loads data from both databases using appropriate connectors (JDBC for MySQL, MongoDB Spark connector). The system implements a weighted average price calculation using the formula `(sum of shares * price) / total shares` for accurate pricing metrics. All processing strictly uses PySpark functions as per requirements, avoiding pandas or other Python packages for data manipulation.
+
+            ### Data Processing Pipeline
+            The transformation pipeline begins with hourly aggregation using `aggregate_hourly_transactions`, which groups transactions by hour and ticker, calculating total volume and weighted average prices. The Silver Layer joins this hourly data with company information and market index values. The system then progressively aggregates data into daily, monthly, and quarterly summaries using PySpark's `date_trunc` and aggregation functions, maintaining proper column naming and formatting as specified in the requirements.
+
+            ### Output & Results
+            The system generates four CSV files saved to the configured output path: hourly_stock_data.csv, daily_stock_data.csv, monthly_stock_data.csv, and quarterly_stock_data.csv. Each output follows specific formatting requirements with columns including datetime/date/month/quarter, ticker, company_name, avg_price (rounded to 2 decimals), volume, and market_index. The quarterly data uses a special format "YYYY Q#" for quarter representation. All outputs include preview displays showing the first 5 rows for verification.
+
+            ### Configuration & Deployment
+            The project uses environment variables managed through `.env` files for database credentials and paths. A `config.yaml` file defines all configuration parameters including MySQL and MongoDB connection strings, table names, and output paths. The system requires the MySQL Connector JAR for Spark JDBC connectivity and proper MongoDB Spark connector packages. The main orchestration script handles the complete workflow from session creation through all processing stages, ensuring proper resource cleanup upon completion.
+            """)
+
 
 
 
